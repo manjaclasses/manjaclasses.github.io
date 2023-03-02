@@ -9,14 +9,15 @@
     <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-storage.js"></script>
-    <title>Document</title>
+    <title>It's just a website</title>
 </head>
 
 <body>
 
-    <h1>Upload Files to Firebase and Firestore</h1>
-    <input type="file" multiple id="fileInput" />
-    <button onclick="uploadFiles()">Upload Files</button>
+        <h1 >Upload Files to Server</h1>
+        <input type="file" multiple id="fileInput" />
+        <button onclick="uploadFiles()">Upload Files</button>
+
 
     <script>
         // Initialize Firebase
@@ -46,11 +47,12 @@
                 const downloadURL = await snapshot.ref.getDownloadURL();
                 fileUrls.push(downloadURL);
             }
-            const collectionRef = firestore.collection('files');
+            const collectionRef = firestore.collection('doc');
             for (const url of fileUrls) {
                 await collectionRef.add({ url });
             }
             console.log('Files uploaded and URLs saved in Firestore!');
+            alert("Files uploaded and URLs saved in Server!")
         };
     </script>
 
@@ -58,4 +60,3 @@
 </body>
 
 </html>
-
