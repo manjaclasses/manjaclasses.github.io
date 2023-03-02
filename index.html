@@ -1,27 +1,47 @@
 <!DOCTYPE html>
 <html>
-<style>
-h1 {
-  text-align: center;
-}
-
-.cen {
-  text-align: left;
-}
-
-h3 {
-  text-align: center;
-}
-</style>
+<head>
+	<title>File Upload </title>
+	<!-- Include Firebase SDK -->
+	<script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
+	<!-- Include Firebase storage module -->
+	<script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-storage.js"></script>
+</head>
 <body>
+	<h1>File Upload </h1>
+	<form>
+		<input type="file" id="fileInput">
+		<button type="button" onclick="uploadFile()">Upload</button>
+	</form>
+	<script>
+// Initialize Firebase
+var firebaseConfig = {
+  apiKey: "AIzaSyBDWDjrEOFGltyphe8_ypLdKKjIVtEJ9r4",
+  authDomain: "server-98ae7.firebaseapp.com",
+  databaseURL:
+    "https://server-98ae7-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "server-98ae7",
+  storageBucket: "server-98ae7.appspot.com",
+  messagingSenderId: "720177014991",
+  appId: "1:720177014991:web:f5b143cff4f3773051afba",
+  measurementId: "G-KC369EY357",
+};
+firebase.initializeApp(firebaseConfig);
 
-<h1>Welcome to Manja Classes</h1>
-<h3>Make your child future very bright.</h3>
+// Get a reference to the Firebase storage service
+var storage = firebase.storage();
 
-<form  class="cen" method="POST" action="upload.php" enctype="multipart/form-data">
-    <input type="file" name="file">
-    <input type="submit" value="Upload">
-</form>
+// Create a function to upload the file
+function uploadFile() {
+  var file = document.getElementById("fileInput").files[0];
+  var storageRef = storage.ref();
+  var fileRef = storageRef.child(file.name);
 
+  fileRef.put(file).then(function(snapshot) {
+    console.log("File uploaded successfully!");
+  });
+}
+
+        </script>
 </body>
 </html>
