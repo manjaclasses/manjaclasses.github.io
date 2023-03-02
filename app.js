@@ -18,13 +18,18 @@ var storage = firebase.storage();
 // Create a function to upload multiple files
 function uploadFiles() {
   var files = document.getElementById("fileInput").files;
+  var count = 0;
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
     var storageRef = storage.ref();
     var fileRef = storageRef.child(file.name);
 
     fileRef.put(file).then(function(snapshot) {
-      alert("File uploaded successfully!");
+      console.log("File uploaded successfully!");
+      count++;
+      if (count === files.length) {
+        alert("All files uploaded successfully!");
+      }
     });
   }
 }
