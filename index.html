@@ -1,18 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-	<title>File Upload Example</title>
-	<!-- Include Firebase SDK -->
-	<script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
-	<!-- Include Firebase storage module -->
-	<script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-storage.js"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.1/firebase-storage.js"></script>
+    <title>Document</title>
 </head>
+
 <body>
-	<h1>File Upload Example</h1>
-	<form>
-		<input type="file" id="fileInput" multiple>
-		<button type="button" onclick="uploadFiles()">Upload</button>
-	</form>
-	<script src="app.js"></script>
+
+    <form id="add-review-form">
+        <input type="file" id="doc" name="doc" accept="doc/*" multiple>
+        <button type="submit">Upload This </button>
+
+    </form>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBDWDjrEOFGltyphe8_ypLdKKjIVtEJ9r4",
+            authDomain: "server-98ae7.firebaseapp.com",
+            databaseURL: "https://server-98ae7-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "server-98ae7",
+            storageBucket: "server-98ae7.appspot.com",
+            messagingSenderId: "720177014991",
+            appId: "1:720177014991:web:f5b143cff4f3773051afba",
+            measurementId: "G-KC369EY357"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // const database = firebase.database();
+
+        // Get a reference to the Firebase Storage service
+        const storage = firebase.storage();
+
+        // Get a reference to the Firebase Firestore service
+        const db = firebase.firestore();
+
+        // Handle form submission to add a new movie review to Firebase
+        document.getElementById("add-review-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            // Upload the doc file to Firebase Storage
+            const docFile = document.getElementById("doc").files[0];
+            const docRef = storage.ref().child(`docs/${docFile.name}`);
+            const docSnapshot = await docRef.put(docFile);
+            const docUrl = await docSnapshot.ref.getDownloadURL();
+
+            db.collection("doc").add({
+                docUrl,
+                timestamp: Date(),
+            })
+                .then(() => {
+                    alert("Review added successfully");
+                    document.getElementById("add-review-form").reset();
+                })
+                .catch((error) => {
+                    console.error("Error adding review:", error);
+                    alert("An error occurred while adding the review");
+                });
+        });
+    </script>
+
 </body>
+
 </html>
