@@ -14,11 +14,10 @@
 
 <body>
 
-    <form id="add-review-form">
-        <input type="file" id="doc" name="doc" accept="doc/*" multiple>
-        <button type="submit">Upload This </button>
+    <h1>Upload Files to Firebase and Firestore</h1>
+    <input type="file" multiple id="fileInput" />
+    <button onclick="uploadFiles()">Upload Files</button>
 
-    </form>
     <script>
         // Initialize Firebase
         const firebaseConfig = {
@@ -33,39 +32,30 @@
         };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-
-        // const database = firebase.database();
-
-        // Get a reference to the Firebase Storage service
+        // Get references to Firestore and Storage
+        const firestore = firebase.firestore();
         const storage = firebase.storage();
 
-        // Get a reference to the Firebase Firestore service
-        const db = firebase.firestore();
-
-        // Handle form submission to add a new movie review to Firebase
-        document.getElementById("add-review-form").addEventListener("submit", async (event) => {
-            event.preventDefault();
-            // Upload the doc file to Firebase Storage
-            const docFile = document.getElementById("doc").files[0];
-            const docRef = storage.ref().child(`docs/${docFile.name}`);
-            const docSnapshot = await docRef.put(docFile);
-            const docUrl = await docSnapshot.ref.getDownloadURL();
-
-            db.collection("doc").add({
-                docUrl,
-                timestamp: Date(),
-            })
-                .then(() => {
-                    alert("Review added successfully");
-                    document.getElementById("add-review-form").reset();
-                })
-                .catch((error) => {
-                    console.error("Error adding review:", error);
-                    alert("An error occurred while adding the review");
-                });
-        });
+        // Upload multiple files to Firebase Storage and save URLs in Firestore
+        const uploadFiles = async () => {
+            const files = document.getElementById('fileInput').files;
+            const fileUrls = [];
+            for (const file of files) {
+                const storageRef = storage.ref().child(file.name);
+                const snapshot = await storageRef.put(file);
+                const downloadURL = await snapshot.ref.getDownloadURL();
+                fileUrls.push(downloadURL);
+            }
+            const collectionRef = firestore.collection('files');
+            for (const url of fileUrls) {
+                await collectionRef.add({ url });
+            }
+            console.log('Files uploaded and URLs saved in Firestore!');
+        };
     </script>
+
 
 </body>
 
 </html>
+
